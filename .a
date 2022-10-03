@@ -1,0 +1,58 @@
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <errno.h>
+#include "handlerequest.h"
+#include <fstream>
+#include <stdio.h>
+
+void  server_start(){
+        std::ifstream MyFile;
+        MyFile.open("index.html",std::ios::in);
+        std::string filedata;
+        
+        std::string sendheader="HTTP/1.1 200 OK \n Connection: keep-alive \n Content-Type: text/html \n Content-Length: 400 \n\n ";
+	struct sockaddr_in socket_qe,cli_addr;
+	int server_fd=socket(AF_INET,SOCK_STREAM,0);
+	if(server_fd<0){
+		std::cout<<"error createing socket  "<<strerror(errno)<<std::endl;
+	};
+	socket_qe.sin_family=AF_INET;
+	socket_qe.sin_port=htons(1500);
+	socket_qe.sin_addr.s_addr = INADDR_ANY;
+	socklen_t socket_len=sizeof(socket_qe);
+
+
+	if(bind(server_fd, (struct sockaddr *)&socket_qe,socket_len) < 0){
+		std::cout<<"\nerror binding\n";
+
+	};
+	std::cout<<socket_qe.sin_addr.s_addr<<":"<<socket_qe.sin_port<<std::endl;
+	if(listen(server_fd,3)<0){
+		std::cout<<"error listening"<<std::endl;
+	}
+	socklen_t clilen=sizeof(cli_addr);
+	int cfd=accept(server_fd, (struct sockaddr*)&socket_qe,&socket_len);
+	if (cfd<0){
+		std::cout<<"error accept"<<std::endl;
+	}
+       
+	send(cfd,sendheader.c_str(),sendheader.length(), 0);
+       while(getline(MyFile,filedata)){
+        send(cfd,filedata.c_str(),filedata.length(),0);
+}
+      MyFile.close();
+	std::cout<<"send sucess"<<std::endl;
+	close(cfd);
+	if(shutdown(server_fd, SHUT_RDWR)<0){
+		std::cout<<"error shutdown"<<std::endl;
+		shutdown(server_fd, SHUT_RDWR);
+	}
+
+
+}

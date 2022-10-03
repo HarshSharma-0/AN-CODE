@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Title</title>
+    </head>
+    <body>
+         <span><div id="hour">
+         
+    
+
+     </div> </span> 
+        
+    </body>
+    <style>#hour{
+  color:red;
+    text-align:center ;
+    font-style:italic;
+    font-family: 'Kaushan Script', cursive;
+    border-radius:500px;
+    vertical-align:bottom;
+    text-shadow:5px 3px 3px white;
+    
+    
+    background-image:linear-gradient(red,white);
+    font-size:95px;
+    border-color:white;
+    box-shadow:5px 4px 8px red;
+    
+    
+    
+}</style>
+<script>function printTime() {
+    var d = new Date();
+    var hours = d.getHours();
+    var mins = d.getMinutes();
+    var secs = d.getSeconds();
+    if(hours>12){
+    
+        document.getElementById("hour").innerHTML = hours-12+":"+mins+":"+secs;
+
+    }
+    else{
+document.getElementById("hour").innerHTML = hours+":"+mins+":"+secs;
+}
+}
+setInterval(printTime, 1000);
+alert ("if you like please upvote!!");</script>
+</html>
